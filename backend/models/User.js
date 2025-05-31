@@ -7,10 +7,11 @@ const userSchema = new mongoose.Schema({
   referralCode: { type: String, unique: true },
   referredBy: { type: String, default: null },
   successfulReferrals: { type: Number, default: 0 },
-  sessionToken: { type: String, default: null },
-}, { timestamps: true });
+  sessionToken: String,
+  displayName: { type: String, default: '' },
+  alias: { type: String, unique: true, sparse: true }
+});
 
-// Hash password
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
@@ -18,8 +19,8 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.methods.comparePassword = function (plainText) {
-  return bcrypt.compare(plainText, this.password);
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);
