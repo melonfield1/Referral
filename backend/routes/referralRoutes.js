@@ -1,9 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const referralController = require('../controllers/referralController');
+const Referral = require('../models/Referral');
+const User = require('../models/User');
 
-router.post('/create', referralController.createReferral);
-router.post('/purchase-completed', referralController.markPurchaseCompleted);
-router.get('/user/:userId', referralController.getReferralsByUser);
+// ✅ GET /api/referrals/all
+router.get('/all', async (req, res) => {
+  try {
+    const referrals = await Referral.find()
+      .populate('referrer', 'email')
+      .populate('referred', 'email');
+    res.json(referrals);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching referrals' });
+  }
+});
 
 module.exports = router;
