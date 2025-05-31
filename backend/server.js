@@ -6,6 +6,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const referralRoutes = require('./routes/referralRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const rewardRoutes = require('./routes/rewardRoutes'); // ✅ New
 
 const app = express();
 
@@ -14,7 +15,8 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/referrals', referralRoutes);
-app.use('/api/admin', adminRoutes); // ✅ Protected by basic auth
+app.use('/api/admin', adminRoutes);
+app.use('/api/rewards', rewardRoutes); // ✅ Add this
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
