@@ -3,25 +3,32 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// Routes
 const userRoutes = require('./routes/userRoutes');
 const referralRoutes = require('./routes/referralRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const rewardRoutes = require('./routes/rewardRoutes'); // ✅ New
+const rewardRoutes = require('./routes/rewardRoutes');
+const shopifyRoutes = require('./routes/shopifyRoutes'); // ✅ New route
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/rewards', rewardRoutes); // ✅ Add this
+app.use('/api/rewards', rewardRoutes);
+app.use('/api/shopify', shopifyRoutes); // ✅ Shopify Webhook endpoint
 
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+// Server startup
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
