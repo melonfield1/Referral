@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const crypto = require('crypto');
 
+// Register
 exports.register = async (req, res) => {
   try {
     const { email, password, referralCode } = req.body;
@@ -29,6 +30,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// Login
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,10 +49,13 @@ exports.login = async (req, res) => {
   }
 };
 
+// Auth via session token
 exports.getUserBySession = async (req, res) => {
-  const { sessionToken } = req.query;
+  const token = req.headers.authorization?.split(" ")[1] || req.query.sessionToken;
+  if (!token) return res.status(401).json({ message: 'Missing session token' });
+
   try {
-    const user = await User.findOne({ sessionToken });
+    const user = await User.findOne({ sessionToken: token });
     if (!user) return res.status(401).json({ message: 'Invalid session' });
 
     res.json({
@@ -63,3 +68,4 @@ exports.getUserBySession = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
