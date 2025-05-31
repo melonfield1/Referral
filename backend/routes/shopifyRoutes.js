@@ -7,6 +7,15 @@ const { createDiscountCode } = require('../utils/shopify');
 
 router.post('/order-webhook', async (req, res) => {
   try {
+    // ✅ TEMP: Inject fake referral for Shopify test webhook
+    if (req.body.test === true) {
+      req.body.note_attributes = [
+        { name: 'referral_code', value: 'YOURCODE123' } // ← Replace this with a real referral code
+      ];
+      req.body.email = 'referredtest@example.com';
+      req.body.customer = { email: 'referredtest@example.com' };
+    }
+
     const noteAttr = req.body.note_attributes?.find(attr => attr.name === 'referral_code');
     const referralCode = noteAttr?.value;
 
@@ -34,7 +43,7 @@ router.post('/order-webhook', async (req, res) => {
     referrer.successfulReferrals += 1;
     await referrer.save();
 
-    // 🎉 If 3 referrals hit, reward them
+    // 🎉 Reward logic at 3 successful referrals
     if (referrer.successfulReferrals === 3) {
       const exists = await Reward.findOne({ user: referrer._id });
       if (!exists) {
