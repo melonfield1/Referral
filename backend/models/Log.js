@@ -1,6 +1,9 @@
+// ✅ models/Log.js
+const mongoose = require('mongoose');
+
 const logSchema = new mongoose.Schema({
   type: String,
-  message: String,
+  details: String,
   createdAt: { type: Date, default: Date.now }
 });
 
