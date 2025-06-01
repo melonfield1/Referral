@@ -49,10 +49,8 @@ router.get('/me', async (req, res) => {
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
 
   const latestAnnouncement = await Announcement.findOne().sort({ createdAt: -1 });
-  const announcementData = latestAnnouncement ? {
-    title: latestAnnouncement.title,
-    message: latestAnnouncement.message
-  } : null;
+  const announcementMessage = user.hideAnnouncement ? '' : latestAnnouncement?.message || '';
+  const announcementTitle = user.hideAnnouncement ? '' : latestAnnouncement?.title || '';
 
   res.json({
     userId: user._id,
@@ -61,7 +59,8 @@ router.get('/me', async (req, res) => {
     successfulReferrals: user.successfulReferrals,
     displayName: user.displayName,
     alias: user.alias,
-    announcement: announcementData,
+    announcement: announcementMessage,
+    announcementTitle: announcementTitle,
     hideAnnouncement: user.hideAnnouncement
   });
 });
@@ -92,9 +91,9 @@ router.put('/me/hide-announcement', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   const user = await User.findOne({ sessionToken: token });
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
-  user.hideAnnouncement = req.body.hideAnnouncement === true;
+  user.hideAnnouncement = req.body.hide || false;
   await user.save();
-  res.json({ message: 'Announcement visibility updated' });
+  res.json({ message: 'Updated announcement visibility' });
 });
 
 module.exports = router;
