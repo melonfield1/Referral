@@ -1,3 +1,4 @@
+// ✅ routes/announcementRoutes.js
 const router = require('express').Router();
 const Announcement = require('../models/Announcement');
 
@@ -11,7 +12,7 @@ const basicAuth = (req, res, next) => {
 
 router.post('/announcement', basicAuth, async (req, res) => {
   await Announcement.deleteMany();
-  const newAnnouncement = await Announcement.create({ title: req.body.title, message: req.body.message });
+  const newAnnouncement = await Announcement.create({ message: req.body.message });
   res.json({ message: 'Announcement posted', id: newAnnouncement._id });
 });
 
