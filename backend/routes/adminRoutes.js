@@ -1,4 +1,3 @@
-// ✅ backend/routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -9,15 +8,11 @@ const basicAuth = (req, res, next) => {
   const base64 = authHeader.split(' ')[1];
   const [user, pass] = Buffer.from(base64 || '', 'base64').toString().split(':');
 
-  if (user === process.env.ADMIN_USER && pass === process.env.ADMIN_PASS) {
-    return next();
-  } else {
-    res.setHeader('WWW-Authenticate', 'Basic');
-    return res.status(401).send('Authentication required.');
-  }
+  if (user === process.env.ADMIN_USER && pass === process.env.ADMIN_PASS) return next();
+  res.setHeader('WWW-Authenticate', 'Basic');
+  return res.status(401).send('Authentication required.');
 };
 
-// ✅ Include displayName in projection
 router.get('/all-users', basicAuth, async (req, res) => {
   try {
     const users = await User.find({}, 'email referralCode referredBy successfulReferrals displayName');
@@ -37,3 +32,4 @@ router.get('/rewards', basicAuth, async (req, res) => {
 });
 
 module.exports = router;
+
