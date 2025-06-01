@@ -36,7 +36,9 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user || !(await user.comparePassword(password))) return res.status(400).json({ message: 'Invalid credentials' });
+  if (!user || !(await user.comparePassword(password))) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
 
   user.sessionToken = crypto.randomBytes(32).toString('hex');
   await user.save();
@@ -48,8 +50,8 @@ router.get('/me', async (req, res) => {
   const user = await User.findOne({ sessionToken: token });
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
 
-  const latestAnnouncement = await Announcement.findOne().sort({ createdAt: -1 });
-  const announcementMessage = latestAnnouncement?.message || '';
+  const announcementDoc = await Announcement.findOne().sort({ createdAt: -1 });
+  const announcementMessage = announcementDoc?.message || null;
 
   res.json({
     userId: user._id,
@@ -66,6 +68,7 @@ router.put('/me/display-name', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   const user = await User.findOne({ sessionToken: token });
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
+
   user.displayName = req.body.displayName || '';
   await user.save();
   res.json({ message: 'Name updated' });
