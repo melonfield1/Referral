@@ -17,6 +17,11 @@ const rewardRoutes = require('./routes/rewardRoutes');
 const shopifyRoutes = require('./routes/shopifyRoutes'); // ✅ Shopify webhook
 const announcementRoutes = require('./routes/announcementRoutes'); // ✅ NEW
 
+// ✅ Health Check Route
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
+
 // ✅ Mount API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/referrals', referralRoutes);
