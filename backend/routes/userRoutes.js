@@ -1,3 +1,4 @@
+// ✅ routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -49,8 +50,7 @@ router.get('/me', async (req, res) => {
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
 
   const latestAnnouncement = await Announcement.findOne().sort({ createdAt: -1 });
-  const announcementMessage = user.hideAnnouncement ? '' : latestAnnouncement?.message || '';
-  const announcementTitle = user.hideAnnouncement ? '' : latestAnnouncement?.title || '';
+  const announcementMessage = latestAnnouncement?.message || '';
 
   res.json({
     userId: user._id,
@@ -59,9 +59,7 @@ router.get('/me', async (req, res) => {
     successfulReferrals: user.successfulReferrals,
     displayName: user.displayName,
     alias: user.alias,
-    announcement: announcementMessage,
-    announcementTitle: announcementTitle,
-    hideAnnouncement: user.hideAnnouncement
+    announcement: announcementMessage
   });
 });
 
@@ -85,15 +83,6 @@ router.put('/me/alias', async (req, res) => {
   user.alias = req.body.alias;
   await user.save();
   res.json({ message: 'Alias set' });
-});
-
-router.put('/me/hide-announcement', async (req, res) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  const user = await User.findOne({ sessionToken: token });
-  if (!user) return res.status(401).json({ message: 'Unauthorized' });
-  user.hideAnnouncement = req.body.hide || false;
-  await user.save();
-  res.json({ message: 'Updated announcement visibility' });
 });
 
 module.exports = router;
