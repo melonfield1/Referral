@@ -36,9 +36,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user || !(await user.comparePassword(password))) {
-    return res.status(400).json({ message: 'Invalid credentials' });
-  }
+  if (!user || !(await user.comparePassword(password))) return res.status(400).json({ message: 'Invalid credentials' });
 
   user.sessionToken = crypto.randomBytes(32).toString('hex');
   await user.save();
@@ -51,7 +49,10 @@ router.get('/me', async (req, res) => {
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
 
   const latestAnnouncement = await Announcement.findOne().sort({ createdAt: -1 });
-  const announcementMessage = latestAnnouncement?.message || '';
+  const announcementData = latestAnnouncement ? {
+    title: latestAnnouncement.title,
+    message: latestAnnouncement.message
+  } : null;
 
   res.json({
     userId: user._id,
@@ -60,7 +61,8 @@ router.get('/me', async (req, res) => {
     successfulReferrals: user.successfulReferrals,
     displayName: user.displayName,
     alias: user.alias,
-    announcement: announcementMessage
+    announcement: announcementData,
+    hideAnnouncement: user.hideAnnouncement
   });
 });
 
@@ -68,7 +70,6 @@ router.put('/me/display-name', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   const user = await User.findOne({ sessionToken: token });
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
-
   user.displayName = req.body.displayName || '';
   await user.save();
   res.json({ message: 'Name updated' });
@@ -85,6 +86,15 @@ router.put('/me/alias', async (req, res) => {
   user.alias = req.body.alias;
   await user.save();
   res.json({ message: 'Alias set' });
+});
+
+router.put('/me/hide-announcement', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const user = await User.findOne({ sessionToken: token });
+  if (!user) return res.status(401).json({ message: 'Unauthorized' });
+  user.hideAnnouncement = req.body.hideAnnouncement === true;
+  await user.save();
+  res.json({ message: 'Announcement visibility updated' });
 });
 
 module.exports = router;
