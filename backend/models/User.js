@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   sessionToken: String,
   displayName: { type: String, default: '' },
   alias: { type: String, unique: true, sparse: true },
-  hideAnnouncement: { type: Boolean, default: false } // ✅ New field
+  hideAnnouncement: { type: Boolean, default: false }
 });
 
 userSchema.pre('save', async function (next) {
