@@ -15,6 +15,7 @@ const referralRoutes = require('./routes/referralRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const rewardRoutes = require('./routes/rewardRoutes');
 const shopifyRoutes = require('./routes/shopifyRoutes'); // ✅ Shopify webhook
+const announcementRoutes = require('./routes/announcementRoutes'); // ✅ NEW
 
 // ✅ Mount API Routes
 app.use('/api/users', userRoutes);
@@ -22,6 +23,7 @@ app.use('/api/referrals', referralRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/rewards', rewardRoutes);
 app.use('/api/shopify', shopifyRoutes);
+app.use('/api', announcementRoutes); // ✅ Mount under /api
 
 // ✅ MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
