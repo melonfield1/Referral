@@ -1,9 +1,9 @@
+// ✅ backend/routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Reward = require('../models/Reward');
 
-// ✅ Basic Auth middleware
 const basicAuth = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
   const base64 = authHeader.split(' ')[1];
@@ -17,20 +17,19 @@ const basicAuth = (req, res, next) => {
   }
 };
 
-// ✅ GET /api/admin/all-users
+// ✅ Include displayName in projection
 router.get('/all-users', basicAuth, async (req, res) => {
   try {
-    const users = await User.find({}, 'email referralCode referredBy successfulReferrals');
+    const users = await User.find({}, 'email referralCode referredBy successfulReferrals displayName');
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// ✅ GET /api/admin/rewards
 router.get('/rewards', basicAuth, async (req, res) => {
   try {
-    const rewards = await Reward.find({}, 'user discountCode');
+    const rewards = await Reward.find({}, 'user discountCode').populate('user', 'displayName');
     res.json(rewards);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
