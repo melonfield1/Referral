@@ -9,8 +9,7 @@ const userSchema = new mongoose.Schema({
   successfulReferrals: { type: Number, default: 0 },
   sessionToken: String,
   displayName: { type: String, default: '' },
-  alias: { type: String, unique: true, sparse: true },
-  hideAnnouncement: { type: Boolean, default: false }
+  alias: { type: String, unique: true, sparse: true }
 });
 
 userSchema.pre('save', async function (next) {
