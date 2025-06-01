@@ -63,4 +63,20 @@ router.post('/log', basicAuth, async (req, res) => {
   }
 });
 
+const Config = require('../models/Config');
+
+router.get('/config', basicAuth, async (req, res) => {
+  let config = await Config.findOne();
+  if (!config) config = await Config.create({});
+  res.json(config);
+});
+
+router.put('/config', basicAuth, async (req, res) => {
+  let config = await Config.findOne();
+  if (!config) config = await Config.create({});
+  Object.assign(config, req.body);
+  await config.save();
+  res.json({ message: 'Settings updated' });
+});
+
 module.exports = router;
