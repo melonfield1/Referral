@@ -11,13 +11,21 @@ const basicAuth = (req, res, next) => {
 };
 
 router.post('/announcement', basicAuth, async (req, res) => {
-  await Announcement.create({ message: req.body.message });
-  res.json({ message: 'Announcement posted' });
+  try {
+    await Announcement.create({ message: req.body.message });
+    res.json({ message: 'Announcement posted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to post announcement', error: err.message });
+  }
 });
 
 router.get('/announcement/latest', async (req, res) => {
-  const latest = await Announcement.find().sort({ createdAt: -1 }).limit(1);
-  res.json(latest[0] || {});
+  try {
+    const latest = await Announcement.find().sort({ createdAt: -1 }).limit(1);
+    res.json(latest[0] || {});
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch latest announcement' });
+  }
 });
 
 module.exports = router;
