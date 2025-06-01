@@ -50,8 +50,8 @@ router.get('/me', async (req, res) => {
   const user = await User.findOne({ sessionToken: token });
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
 
-  const announcementDoc = await Announcement.findOne().sort({ createdAt: -1 });
-  const announcementMessage = announcementDoc?.message || null;
+  const latestAnnouncement = await Announcement.findOne().sort({ createdAt: -1 });
+  const announcementMessage = latestAnnouncement?.message || '';
 
   res.json({
     userId: user._id,
