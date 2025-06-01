@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
-
 const announcementSchema = new mongoose.Schema({
-  title: String, // ✅ New field
+  title: String,
   message: String,
   createdAt: { type: Date, default: Date.now }
 });
