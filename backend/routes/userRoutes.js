@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Announcement = require('../models/Announcement');
 const crypto = require('crypto');
 
 router.post('/register', async (req, res) => {
@@ -46,7 +47,19 @@ router.get('/me', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   const user = await User.findOne({ sessionToken: token });
   if (!user) return res.status(401).json({ message: 'Unauthorized' });
-  res.json(user);
+
+  const latestAnnouncement = await Announcement.findOne().sort({ createdAt: -1 });
+  const announcementMessage = latestAnnouncement?.message || '';
+
+  res.json({
+    userId: user._id,
+    email: user.email,
+    referralCode: user.referralCode,
+    successfulReferrals: user.successfulReferrals,
+    displayName: user.displayName,
+    alias: user.alias,
+    announcement: announcementMessage
+  });
 });
 
 router.put('/me/display-name', async (req, res) => {
