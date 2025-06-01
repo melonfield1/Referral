@@ -14,13 +14,11 @@ const userRoutes = require('./routes/userRoutes');
 const referralRoutes = require('./routes/referralRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const rewardRoutes = require('./routes/rewardRoutes');
-const shopifyRoutes = require('./routes/shopifyRoutes'); // ✅ Shopify webhook
-const announcementRoutes = require('./routes/announcementRoutes'); // ✅ NEW
+const shopifyRoutes = require('./routes/shopifyRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
 
 // ✅ Health Check Route
-app.get('/health', (req, res) => {
-  res.send('OK');
-});
+app.get('/health', (req, res) => res.send('OK'));
 
 // ✅ Mount API Routes
 app.use('/api/users', userRoutes);
@@ -28,7 +26,7 @@ app.use('/api/referrals', referralRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/rewards', rewardRoutes);
 app.use('/api/shopify', shopifyRoutes);
-app.use('/api', announcementRoutes); // ✅ Mount under /api
+app.use('/api', announcementRoutes);
 
 // ✅ MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
