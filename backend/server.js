@@ -16,6 +16,8 @@ const adminRoutes = require('./routes/adminRoutes');
 const rewardRoutes = require('./routes/rewardRoutes');
 const shopifyRoutes = require('./routes/shopifyRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
+const shopifyAdminRoutes = require('./routes/shopifyAdminRoutes');
+app.use('/api/shopify-admin', shopifyAdminRoutes);
 
 // ✅ Health Check
 app.get('/health', (req, res) => res.send('OK'));
