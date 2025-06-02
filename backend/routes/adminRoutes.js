@@ -7,7 +7,6 @@ const Announcement = require('../models/Announcement');
 const Config = require('../models/Config');
 const Order = require('../models/Order'); // ✅ New
 const axios = require('axios');
-const Order = require('../models/Order');
 const Revenue = require('../models/Revenue');
 
 // Get total orders & revenue from Mongo (if manually synced)
