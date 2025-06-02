@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-
+const chartRoutes = require('./routes/chartRoutes');
+app.use('/api/charts', chartRoutes);
 // ✅ Middleware
 app.use(cors());
 app.use(express.json());
