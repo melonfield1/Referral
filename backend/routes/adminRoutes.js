@@ -12,6 +12,22 @@ const router = express.Router();
 const Order = require('../models/Order');
 const Revenue = require('../models/Revenue');
 
+// Get total orders & revenue from Mongo (if manually synced)
+router.get('/summary/metrics', async (req, res) => {
+  try {
+    const totalOrders = await Order.countDocuments();
+    const totalRevenue = await Revenue.aggregate([{ $group: { _id: null, total: { $sum: '$amount' } } }]);
+    res.json({
+      orders: totalOrders,
+      revenue: totalRevenue[0]?.total || 0
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching metrics' });
+  }
+});
+
+module.exports = router;
+
 // ✅ Basic Auth middleware
 const basicAuth = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
